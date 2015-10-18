@@ -1,2 +1,2 @@
 # StuffHacker
-Tools for messing with network requests
+Qt command-line tool for messing with network requests
