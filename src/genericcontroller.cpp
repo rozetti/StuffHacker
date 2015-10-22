@@ -172,9 +172,23 @@ void GenericController::relay(QString const &url, HttpRequest& /*request*/, Http
 
         bytes = process(s, bytes);
 
-        std::stringstream ss;
-        ss << std::endl << QString(bytes).toStdString() << std::endl;
-        log(ss.str());
+        auto showFilter = m_settings.value("showFilter").toString().toLower();
+        if (!showFilter.isEmpty())
+        {
+            auto s = QString(bytes).toLower();
+            if (s.contains(showFilter))
+            {
+                std::stringstream ss;
+                ss << std::endl << QString(bytes).toStdString() << std::endl;
+                log(ss.str());
+            }
+        }
+        else
+        {
+            std::stringstream ss;
+            ss << std::endl << QString(bytes).toStdString() << std::endl;
+            log(ss.str());
+        }
 
         std::stringstream ss2;
         ss2 << std::endl << QString::number(bytes.length()).toStdString() << " bytes received" << std::endl;
@@ -220,7 +234,8 @@ void GenericController::service(HttpRequest& request, HttpResponse& response)
         auto response_filename = cc[1];
 
         std::stringstream ss;
-        ss << std::endl << "canned response " << response_filename.toStdString() << std::endl;
+        ss << "\ncaptured request: " << QString(s).toStdString();
+        ss << std::endl << "shipping canned response " << response_filename.toStdString() << std::endl;
         log(ss.str());
 
         // todo crz: process the canned response
