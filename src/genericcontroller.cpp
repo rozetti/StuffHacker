@@ -48,6 +48,21 @@ GenericController::GenericController(CRZSettings &settings, QObject *parent) :
 
 QByteArray GenericController::process(QString const &url, QByteArray &bytes)
 {
+    auto replace = m_settings.value("responseReplace").toString();
+    if (!replace.isEmpty())
+    {
+        auto ss = replace.split(':');
+        if (ss.count() == 2)
+        {
+            auto s = QString(bytes);
+
+            QRegularExpression re(ss[0]);
+            s.replace(re, ss[1]);
+
+            bytes = s.toUtf8();
+        }
+    }
+
     processRawResponse(url, bytes);
 
     auto json = QJsonDocument::fromJson(bytes);
