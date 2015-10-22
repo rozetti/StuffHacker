@@ -134,12 +134,14 @@ void GenericController::relay(QString const &url, HttpRequest& /*request*/, Http
         auto ss = replace.split(':');
         if (ss.count() == 2)
         {
-            QRegularExpression re(ss[0]);
-            s.replace(re, ss[1]);
+            if (s.contains(ss[0]))
+            {
+                s.replace(ss[0], ss[1]);
 
-            std::stringstream ss;
-            ss << "\nmodified request: " << QString(s).toStdString();
-            log(ss.str());
+                std::stringstream ss;
+                ss << "\nmodified request: " << QString(s).toStdString();
+                log(ss.str());
+            }
         }
     }
 
