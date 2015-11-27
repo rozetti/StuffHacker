@@ -48,10 +48,15 @@ GenericController::GenericController(CRZSettings &settings, QObject *parent) :
 
 QByteArray GenericController::process(QString const &url, QByteArray &bytes)
 {
-    auto replace = m_settings.value("responseReplace").toString();
+    auto replace = m_settings.value("responseReplace", "").toString();
+    replace.replace("[comma]", ",");
+    replace.replace("[quote]", "\"");
+
+    auto delimiter = m_settings.value("responseReplaceDelimiter", ":").toString();
+
     if (!replace.isEmpty())
     {
-        auto ss = replace.split(':');
+        auto ss = replace.split(delimiter);
         if (ss.count() == 2)
         {
             auto s = QString(bytes);
